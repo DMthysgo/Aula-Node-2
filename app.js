@@ -121,7 +121,7 @@ app.post('/auth/login', async (req, res) => {
     }
     // Checar se senha é compativel
     const checkPassword = await bcrypt.compare(password, user.password)
-    if(!checkPasword) {
+    if(!checkPassword) {
         return res.status(422).json({msg: 'Senha inválida'})
     }
 
