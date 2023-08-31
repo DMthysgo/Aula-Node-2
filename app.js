@@ -14,13 +14,20 @@ app.use(express.json())
 const User = require('./models/User')
 
 // Open Route - Public Route
+// Defina um diretório estático para servir arquivos CSS, imagens e scripts
+app.use(express.static('frontend'));
+
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/frontend/index.html')
 })
 
 // Private Route
-app.get("/user/:id", checkToken, async (req, res) => {
+app.get('/profile?:id', async (req,res) => {
+    const userId = req.params.id
+    res.sendFile(__dirname + '/frontend/user.html')
+})
 
+app.post('/user/:id', checkToken, async (req, res) => {
     const id = req.params.id
 
     // Checar se usuário existe
@@ -33,8 +40,8 @@ app.get("/user/:id", checkToken, async (req, res) => {
 })
 
 function checkToken(req, res, next) {
-    const authHeader = req.headers['authorization']
-    const token = authHeader && authHeader.split(" ")[1]
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
 
     if (!token) {
         return res.status(401).json({msg: 'Acesso negado'})
@@ -133,7 +140,7 @@ app.post('/auth/login', async (req, res) => {
         },
         secret,
         )
-        res.status(200).json({msg: 'Autenticação realizada com sucesso', token})
+        res.status(200).json({msg: 'Autenticação realizada com sucesso',id: user._id,token})
     } catch(error) {
         console.log(error)
         res.status(500).json({msg: 'Aconteceu um erro no servidor, tente novamente mais tarde'})
